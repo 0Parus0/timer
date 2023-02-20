@@ -3,6 +3,7 @@ class Timer {
     this.durationInput = durationInput;
     this.startBtn = startBtn;
     this.pauseBtn = pauseBtn;
+    this.timerId;
     if (callbacks) {
       this.onStart = callbacks.onStart;
       this.onTick = callbacks.onTick;
@@ -12,15 +13,18 @@ class Timer {
     this.pauseBtn.addEventListener("click", this.pause);
   }
   start = () => {
-    if (this.onStart) {
-      this.onStart(this.timeRemaining);
+    if (!this.timerId) {
+      if (this.onStart) {
+        this.onStart(this.timeRemaining);
+      }
+      this.tick();
+      this.timerId = setInterval(this.tick, 20);
     }
-    this.tick();
-    this.timerId = setInterval(this.tick, 20);
   };
 
   pause = () => {
     clearInterval(this.timerId);
+    this.timerId = null;
   };
   tick = () => {
     if (this.timeRemaining <= 0) {
